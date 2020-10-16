@@ -74,7 +74,7 @@ type jTaskAvailable struct {
 	Total  int `json:"total"`
 }
 
-type jTaskById struct {
+type TaskById struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -150,7 +150,7 @@ func (c *Client) GetTasks(taskQuery TaskQuery) (*jTaskAvailable, error) {
 	return &tasks, nil
 }
 
-func (c *Client) GetTaskById(id string) (*jTaskById, error) {
+func (c *Client) GetTaskById(id string) (*TaskById, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(TasksUrl+"/%s", id), nil)
 	if err != nil {
 		return nil, err
@@ -161,7 +161,7 @@ func (c *Client) GetTaskById(id string) (*jTaskById, error) {
 		return nil, err
 	}
 
-	var task jTaskById
+	var task TaskById
 
 	err = json.Unmarshal(res, &task)
 	if err != nil {
