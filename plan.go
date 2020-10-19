@@ -244,11 +244,6 @@ func (c *Client) CreatePlanFromRawJson(jsonRequest string) (*PlanCreated, error)
 		return nil, err
 	}
 
-	dst := &bytes.Buffer{}
-	if err := json.Indent(dst, res, "", "  "); err != nil {
-		panic(err)
-	}
-
 	var plan PlanCreated
 
 	err = json.Unmarshal(res, &plan)
