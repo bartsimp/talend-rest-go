@@ -9,19 +9,31 @@ import (
 const RemoteEngineUrl string = DefaultRestUrl + "/runtimes/remote-engine"
 
 type RemoteEngine struct {
-	Id            string        `json:"id"`
-	Name          string        `json:"name"`
-	Description   string        `json:"description"`
-	Workspace     Workspaceinfo `json:"workspace"`
-	CreateDate    int           `json:"createDate"`
-	UpdateDate    int           `json:"updateDate"`
-	RuntimeId     string        `json:"runtimeId"`
-	Availability  string        `json:"availability"`
-	Managed       bool          `json:"managed"`
-	EnvironmentId string        `json:"environmentId"`
-	WorkspaceId   string        `json:"workspaceId"`
-	Status        string        `json:"status"`
-	RunProfiles   []string      `json:"runProfiles"`
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Workspace   struct {
+		Id          string `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Owner       string `json:"workspace"`
+		Type        string `json:"type"`
+		Environment struct {
+			Id          string `json:"id"`
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			Default     bool   `json:"default"`
+		} `json:"environment"`
+	} `json:"workspace"`
+	CreateDate    int      `json:"createDate"`
+	UpdateDate    int      `json:"updateDate"`
+	RuntimeId     string   `json:"runtimeId"`
+	Availability  string   `json:"availability"`
+	Managed       bool     `json:"managed"`
+	EnvironmentId string   `json:"environmentId"`
+	WorkspaceId   string   `json:"workspaceId"`
+	Status        string   `json:"status"`
+	RunProfiles   []string `json:"runProfiles"`
 	Debug         struct {
 		Host string `json:"host"`
 	} `json:"debug"`

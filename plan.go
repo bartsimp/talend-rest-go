@@ -50,10 +50,21 @@ type PlanCreated struct {
 
 type PlanAvailable struct {
 	Items []struct {
-		Executable string    `json:"executable"`
-		Name       string    `json:"name"`
-		Workspace  Workspace `json:"workspace"`
-		ArtifactId string    `json:"artifactId"`
+		Executable string `json:"executable"`
+		Name       string `json:"name"`
+		Workspace  struct {
+			Id          string `json:"id"`
+			Name        string `json:"name"`
+			Owner       string `json:"owner"`
+			Type        string `json:"type"`
+			Environment struct {
+				Id          string `json:"id"`
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				Default     bool   `json:"default"`
+			} `json:"environment"`
+		} `json:"workspace"`
+		ArtifactId string `json:"artifactId"`
 		Runtime    struct {
 			Type string `json:"type"`
 			Id   string `json:"id"`

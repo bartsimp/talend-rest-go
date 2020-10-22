@@ -12,11 +12,22 @@ const ArtifactsUrl string = DefaultRestUrl + "/artifacts"
 
 type jArtifact struct {
 	Items []struct {
-		Id        string    `json:"id"`
-		Name      string    `json:"name"`
-		Type      string    `json:"type"`
-		Versions  []string  `json:"versions"`
-		Workspace Workspace `json:"workspace"`
+		Id        string   `json:"id"`
+		Name      string   `json:"name"`
+		Type      string   `json:"type"`
+		Versions  []string `json:"versions"`
+		Workspace struct {
+			Id          string `json:"id"`
+			Name        string `json:"name"`
+			Owner       string `json:"owner"`
+			Type        string `json:"type"`
+			Environment struct {
+				Id          string `json:"id"`
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				Default     bool   `json:"default"`
+			} `json:"environment"`
+		} `json:"workspace"`
 	} `json:"items"`
 	Limit  int `json:"limit"`
 	Offset int `json:"offset"`

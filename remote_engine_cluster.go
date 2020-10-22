@@ -10,29 +10,27 @@ import (
 const RemoteEngineClusterUrl string = DefaultRestUrl + "/runtimes/remote-engine-clusters"
 
 type RemoteEngineCluster struct {
-	Id           string        `json:"id"`
-	Name         string        `json:"name"`
-	Description  string        `json:"description"`
-	Workspace    Workspaceinfo `json:"workspace"`
-	CreateDate   int           `json:"createDate"`
-	UpdateDate   int           `json:"updateDate"`
-	RuntimeId    string        `json:"runtimeId"`
-	Availability string        `json:"availability"`
-	Managed      bool          `json:"managed"`
-}
-
-type Workspaceinfo struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Owner       string `json:"workspace"`
-	Type        string `json:"type"`
-	Environment struct {
+	Workspace   struct {
 		Id          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
-		Default     bool   `json:"default"`
-	} `json:"environment"`
+		Owner       string `json:"workspace"`
+		Type        string `json:"type"`
+		Environment struct {
+			Id          string `json:"id"`
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			Default     bool   `json:"default"`
+		} `json:"environment"`
+	} `json:"workspace"`
+	CreateDate   int    `json:"createDate"`
+	UpdateDate   int    `json:"updateDate"`
+	RuntimeId    string `json:"runtimeId"`
+	Availability string `json:"availability"`
+	Managed      bool   `json:"managed"`
 }
 
 func (c *Client) GetRemoteEngineClusters(searchQuery string) (*[]RemoteEngineCluster, error) {
