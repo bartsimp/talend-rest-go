@@ -43,7 +43,8 @@ type TaskCreate struct {
 	//		OverrideWithDefaultParameters bool
 	//		AutoUpgradeFailed             bool
 	//	} `json:"autoUpgradeInfo"`
-	EnvironmentId string `json:"environmentId,omitempty"`
+	//	EnvironmentId string `json:"environmentId,omitempty"`
+	Environment string `json:"environment"`
 }
 
 type TaskCreated struct {
@@ -266,7 +267,7 @@ func (c *Client) ParseTask(t *TaskCreate) (*jTaskCreate, error) {
 	*/
 
 	// EnvironmentId is required in create not in update
-	if len(t.EnvironmentId) > 0 {
+	if t.Environment != "" {
 		jtask.EnvironmentId = workspaces[0].Environment.Id
 	}
 
