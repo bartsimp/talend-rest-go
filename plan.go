@@ -48,6 +48,59 @@ type PlanCreated struct {
 	//	Artifact     ArtifactCreated `json:"artifact"`
 }
 
+type PlanRunConfigRequest struct {
+	Name      string `json:"name"`
+	Workspace struct {
+		Name        string `json:"name"`
+		Environment string `json:"environment"`
+	} `json:"workspace"`
+	PlanRunConfig PlanRunConfig `json:"planRunConfig"`
+}
+
+type PlanRunConfigResponse struct {
+	PlanId        string        `json:"planId"`
+	PlanRunConfig PlanRunConfig `json:"planRunConfig"`
+}
+
+type PlanRunConfig struct {
+	Trigger struct {
+		Type      string `json:"type"`
+		Interval  int    `json:"interval,omitempty"`
+		StartDate string `json:"startDate"`
+		TimeZone  string `json:"timeZone"`
+		AtTimes   struct {
+			Type      string   `json:"type"`
+			Times     []string `json:"times,omitempty"`
+			Time      string   `json:"time"`
+			StartTime string   `json:"startTime"`
+			EndTime   string   `json:"endTime"`
+			Interval  string   `json:"interval"`
+		} `json:"atTimes,omitempty"`
+		AtDays struct {
+			Type string   `json:"type"`
+			Day  int      `json:"day,omitempty"`
+			Days []string `json:"days,omitempty"`
+		} `json:"atDays,omitempty"`
+		Webhook struct {
+			Name           string `json:"name"`
+			Description    string `json:"description,omitempty"`
+			TriggerCalls   int    `json:"triggerCalls,omitempty"`
+			TriggerTimeout int    `json:"triggerTimeout,omitempty"`
+			RunAsUser      string `json:"runAsUser,omitempty"`
+			NewUrl         bool   `json:"newUrl,omitempty"`
+			Url            string `json:"url,omitempty"`
+		} `json:"webhook,omitempty"`
+	} `json:"trigger,omitempty"`
+	Runtime struct {
+		Type         string `json:"type"`         // "type": "CLOUD",
+		Id           string `json:"id"`           // "id": "5c9a51dc7b353e43c7fc787c",
+		EngineId     string `json:"engineId"`     // "engineId": "5c9a51dc7b353e43c7fc787c",
+		ClusterId    string `json:"clusterId"`    // "clusterId": "5c9a51dc7b353e43c7fc787c",
+		RunProfileId string `json:"runProfileId"` // "runProfileId": "5c9a51dc7b353e43c7fc783c"
+	} `json:"runtime,omitempty"`
+	ParallelExecutionAllowed bool `json:"parallelExecutionAllowed,omitempty"`
+}
+
 type PlanAvailable struct {
 	Items []struct {
 		Executable string `json:"executable"`
@@ -420,4 +473,133 @@ func (c *Client) UpdatePlan(planId string, p *PlanCreate) (*PlanCreated, error) 
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
 	return c.UpdatePlanFromRawJson(planId, string(prettyJSON.Bytes()))
+}
+
+func (c *Client) GetPlanRunConfigByPlanId(planId string) (*PlanRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(PlansUrl+"/%s/run-config", planId), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var planrunconfig PlanRunConfig
+
+	err = json.Unmarshal(res, &planrunconfig)
+	if err != nil {
+		return nil, err
+	}
+
+	var planRunConfigResponse PlanRunConfigResponse
+
+	planRunConfigResponse.PlanId = planId
+	planRunConfigResponse.PlanRunConfig = planrunconfig
+
+	return &planRunConfigResponse, nil
+}
+
+func (c *Client) DeletePlanRunConfigByPlanId(planId string) error {
+	req, err := http.NewRequest(http.MethodDelete, PlansUrl+"/"+planId+"/run-config", nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.doRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) UpdatePlanRunConfigFromRawFile(planId string, jsonRawFile string) (*PlanRunConfigResponse, error) {
+	content, err := ioutil.ReadFile(jsonRawFile)
+	if err != nil {
+		return nil, err
+	}
+	// Convert []byte to string and print to screen
+	text := string(content)
+	return c.UpdatePlanRunConfigFromRawJson(planId, text)
+}
+
+func (c *Client) UpdatePlanRunConfigFromRawJson(planId string, jsonRequest string) (*PlanRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodPut, PlansUrl+"/"+planId+"/run-config", strings.NewReader(jsonRequest))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var planrunconfig PlanRunConfig
+
+	err = json.Unmarshal(res, &planrunconfig)
+	if err != nil {
+		return nil, err
+	}
+
+	var planrunconfigResponse PlanRunConfigResponse
+	planrunconfigResponse.PlanId = planId
+	planrunconfigResponse.PlanRunConfig = planrunconfig
+
+	return &planrunconfigResponse, nil
+}
+
+func (c *Client) UpdatePlanRunConfigFromPlainFile(jsonPlanRunConfigFile string) (*PlanRunConfigResponse, error) {
+	content, err := ioutil.ReadFile(jsonPlanRunConfigFile)
+	if err != nil {
+		return nil, err
+	}
+	// Convert []byte to string and print to screen
+	text := string(content)
+
+	return c.UpdatePlanRunConfigFromPlainJson(text)
+}
+
+func (c *Client) UpdatePlanRunConfigFromPlainJson(jsonPlanRunConfig string) (*PlanRunConfigResponse, error) {
+
+	var planRunConfigRequest PlanRunConfigRequest
+
+	err := json.Unmarshal([]byte(jsonPlanRunConfig), &planRunConfigRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.UpdatePlanRunConfig(&planRunConfigRequest)
+}
+
+func (c *Client) UpdatePlanRunConfig(planRunConfig *PlanRunConfigRequest) (*PlanRunConfigResponse, error) {
+
+	workspaceQuery := "name==" + planRunConfig.Workspace.Name + ";environment.name==" + planRunConfig.Workspace.Environment
+	workspaces, err := c.GetWorkspaces(workspaceQuery)
+	if err != nil {
+		return nil, err
+	}
+	if len(workspaces) > 1 {
+		return nil, fmt.Errorf("workspace not unique")
+	}
+	workspaceId := workspaces[0].Id
+
+	plans, err := c.GetPlans(PlanQuery{Name: planRunConfig.Name, WorkspaceId: workspaceId, Limit: 100, Offset: 0})
+	if len(plans.Items) > 1 {
+		return nil, fmt.Errorf("plan not unique")
+	}
+	planId := plans.Items[0].Executable
+
+	j, err := json.Marshal(planRunConfig.PlanRunConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	var prettyJSON bytes.Buffer
+	json.Indent(&prettyJSON, j, "", "  ")
+
+	return c.UpdatePlanRunConfigFromRawJson(planId, string(prettyJSON.Bytes()))
 }
