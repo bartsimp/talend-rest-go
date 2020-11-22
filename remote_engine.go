@@ -95,6 +95,20 @@ func (c *Client) GetRemoteEnginesByEngineId(engineId string) (*RemoteEngine, err
 	return &re, nil
 }
 
+func (c *Client) DeleteRemoteEngines(engineId string) error {
+	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf(RemoteEngineUrl+"/%s", engineId), nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.doRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Client) GetRemoteEnginesRunProfile(engineId string) (*[]RuntimeRunProfile, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", engineId), nil)
 	if err != nil {

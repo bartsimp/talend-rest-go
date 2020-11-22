@@ -110,6 +110,20 @@ func (c *Client) CreateRemoteEngineClustersFromRawJson(jsonRequest string) (*Rem
 	return &response, nil
 }
 
+func (c *Client) DeleteRemoteEngineClusters(clusterId string) error {
+	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf(RemoteEngineClusterUrl+"/%s", clusterId), nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.doRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Client) GetRemoteEngineClustersRunProfile(clusterId string) (*[]ClusterRunProfile, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", clusterId), nil)
 	if err != nil {
