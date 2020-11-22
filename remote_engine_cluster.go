@@ -33,6 +33,18 @@ type RemoteEngineCluster struct {
 	Managed      bool   `json:"managed"`
 }
 
+type ClusterRunProfile struct {
+	Id           string   `json:"id,omitempty"`
+	Name         string   `json:"name,omitempty"`
+	Description  string   `json:"description,omitempty"`
+	CreateDate   string   `json:"createDate,omitempty"`
+	UpdateDate   string   `json:"updateDate,omitempty"`
+	Type         string   `json:"type,omitempty"`
+	JvmArguments []string `json:"jvmArguments,omitempty"`
+	RuntimeId    string   `json:"runtimeId,omitempty"`
+	Version      int      `json:"version,omitempty"`
+}
+
 func (c *Client) GetRemoteEngineClusters(searchQuery string) (*[]RemoteEngineCluster, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineClusterUrl+"?_s=%s", searchQuery), nil)
 	if err != nil {
@@ -96,4 +108,46 @@ func (c *Client) CreateRemoteEngineClustersFromRawJson(jsonRequest string) (*Rem
 	}
 
 	return &response, nil
+}
+
+func (c *Client) GetRemoteEngineClustersRunProfile(clusterId string) (*[]ClusterRunProfile, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", clusterId), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var crp []ClusterRunProfile
+
+	err = json.Unmarshal(res, &crp)
+	if err != nil {
+		return nil, err
+	}
+
+	return &crp, nil
+}
+
+func (c *Client) GetRemoteEngineClustersRunProfileByProfileId(clusterId string, runProfileId string) (*[]ClusterRunProfile, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles/%s", clusterId, runProfileId), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var crp []ClusterRunProfile
+
+	err = json.Unmarshal(res, &crp)
+	if err != nil {
+		return nil, err
+	}
+
+	return &crp, nil
 }
