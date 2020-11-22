@@ -54,8 +54,8 @@ func (c *Client) GetRemoteEngineClusters(searchQuery string) (*[]RemoteEngineClu
 	return &rec, nil
 }
 
-func (c *Client) GetRemoteEngineClustersById(id string) (*RemoteEngineCluster, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineClusterUrl+"/%s", id), nil)
+func (c *Client) GetRemoteEngineClustersByClusterId(clusterId string) (*RemoteEngineCluster, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineClusterUrl+"/%s", clusterId), nil)
 	if err != nil {
 		return nil, err
 	}
