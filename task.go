@@ -140,6 +140,61 @@ type jTaskCreate struct {
 	EnvironmentId string `json:"environmentId,omitempty"`
 }
 
+type TaskRunConfigRequest struct {
+	Name      string `json:"name"`
+	Workspace struct {
+		Name        string `json:"name"`
+		Environment string `json:"environment"`
+	} `json:"workspace"`
+	TaskRunConfig TaskRunConfig `json:"taskRunConfig"`
+}
+
+type TaskRunConfigResponse struct {
+	TaskId        string        `json:"taskId"`
+	TaskRunConfig TaskRunConfig `json:"taskRunConfig"`
+}
+
+type TaskRunConfig struct {
+	Trigger struct {
+		Type      string `json:"type"`
+		Interval  int    `json:"interval,omitempty"`
+		StartDate string `json:"startDate"`
+		TimeZone  string `json:"timeZone"`
+		AtTimes   struct {
+			Type      string   `json:"type"`
+			Times     []string `json:"times,omitempty"`
+			Time      string   `json:"time"`
+			StartTime string   `json:"startTime"`
+			EndTime   string   `json:"endTime"`
+			Interval  string   `json:"interval"`
+		} `json:"atTimes,omitempty"`
+		AtDays struct {
+			Type string   `json:"type"`
+			Day  int      `json:"day,omitempty"`
+			Days []string `json:"days,omitempty"`
+		} `json:"atDays,omitempty"`
+		Webhook struct {
+			Name           string `json:"name"`
+			Description    string `json:"description,omitempty"`
+			TriggerCalls   int    `json:"triggerCalls,omitempty"`
+			TriggerTimeout int    `json:"triggerTimeout,omitempty"`
+			RunAsUser      string `json:"runAsUser,omitempty"`
+			NewUrl         bool   `json:"newUrl,omitempty"`
+			Url            string `json:"url,omitempty"`
+		} `json:"webhook,omitempty"`
+	} `json:"trigger,omitempty"`
+	Runtime struct {
+		Type         string `json:"type"`         // "type": "CLOUD",
+		Id           string `json:"id"`           // "id": "5c9a51dc7b353e43c7fc787c",
+		EngineId     string `json:"engineId"`     // "engineId": "5c9a51dc7b353e43c7fc787c",
+		ClusterId    string `json:"clusterId"`    // "clusterId": "5c9a51dc7b353e43c7fc787c",
+		RunProfileId string `json:"runProfileId"` // "runProfileId": "5c9a51dc7b353e43c7fc783c"
+	} `json:"runtime,omitempty"`
+	ParallelExecutionAllowed bool   `json:"parallelExecutionAllowed,omitempty"`
+	LogLevel                 string `json:"logLevel,omitempty"`
+	RemoteRunAsUser          string `json:"remoteRunAsUser,omitempty"`
+}
+
 func (c *Client) GetTasks(taskQuery TaskQuery) (*jTaskAvailable, error) {
 	queryParms, _ := query.Values(taskQuery)
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(TasksUrl+"?%s", queryParms.Encode()), nil)
@@ -385,4 +440,133 @@ func (c *Client) DeleteTask(id string) error {
 	}
 
 	return nil
+}
+
+func (c *Client) GetTaskRunConfigByTaskId(taskId string) (*TaskRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(TasksUrl+"/%s/run-config", taskId), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var taskrunconfig TaskRunConfig
+
+	err = json.Unmarshal(res, &taskrunconfig)
+	if err != nil {
+		return nil, err
+	}
+
+	var taskRunConfigResponse TaskRunConfigResponse
+
+	taskRunConfigResponse.TaskId = taskId
+	taskRunConfigResponse.TaskRunConfig = taskrunconfig
+
+	return &taskRunConfigResponse, nil
+}
+
+func (c *Client) DeleteTaskRunConfigByTaskId(taskId string) error {
+	req, err := http.NewRequest(http.MethodDelete, TasksUrl+"/"+taskId+"/run-config", nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.doRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) UpdateTaskRunConfigFromRawFile(taskId string, jsonRawFile string) (*TaskRunConfigResponse, error) {
+	content, err := ioutil.ReadFile(jsonRawFile)
+	if err != nil {
+		return nil, err
+	}
+	// Convert []byte to string and print to screen
+	text := string(content)
+	return c.UpdateTaskRunConfigFromRawJson(taskId, text)
+}
+
+func (c *Client) UpdateTaskRunConfigFromRawJson(taskId string, jsonRequest string) (*TaskRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodPut, TasksUrl+"/"+taskId+"/run-config", strings.NewReader(jsonRequest))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var taskrunconfig TaskRunConfig
+
+	err = json.Unmarshal(res, &taskrunconfig)
+	if err != nil {
+		return nil, err
+	}
+
+	var taskrunconfigResponse TaskRunConfigResponse
+	taskrunconfigResponse.TaskId = taskId
+	taskrunconfigResponse.TaskRunConfig = taskrunconfig
+
+	return &taskrunconfigResponse, nil
+}
+
+func (c *Client) UpdateTaskRunConfigFromPlainFile(jsonTaskRunConfigFile string) (*TaskRunConfigResponse, error) {
+	content, err := ioutil.ReadFile(jsonTaskRunConfigFile)
+	if err != nil {
+		return nil, err
+	}
+	// Convert []byte to string and print to screen
+	text := string(content)
+
+	return c.UpdateTaskRunConfigFromPlainJson(text)
+}
+
+func (c *Client) UpdateTaskRunConfigFromPlainJson(jsonTaskRunConfig string) (*TaskRunConfigResponse, error) {
+
+	var taskRunConfigRequest TaskRunConfigRequest
+
+	err := json.Unmarshal([]byte(jsonTaskRunConfig), &taskRunConfigRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.UpdateTaskRunConfig(&taskRunConfigRequest)
+}
+
+func (c *Client) UpdateTaskRunConfig(taskRunConfig *TaskRunConfigRequest) (*TaskRunConfigResponse, error) {
+
+	workspaceQuery := "name==" + taskRunConfig.Workspace.Name + ";environment.name==" + taskRunConfig.Workspace.Environment
+	workspaces, err := c.GetWorkspaces(workspaceQuery)
+	if err != nil {
+		return nil, err
+	}
+	if len(workspaces) > 1 {
+		return nil, fmt.Errorf("workspace not unique")
+	}
+	workspaceId := workspaces[0].Id
+
+	tasks, err := c.GetTasks(TaskQuery{Name: taskRunConfig.Name, WorkspaceId: workspaceId, Limit: 100, Offset: 0})
+	if len(tasks.Items) > 1 {
+		return nil, fmt.Errorf("task not unique")
+	}
+	taskId := tasks.Items[0].Executable
+
+	j, err := json.Marshal(taskRunConfig.TaskRunConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	var prettyJSON bytes.Buffer
+	json.Indent(&prettyJSON, j, "", "  ")
+
+	return c.UpdateTaskRunConfigFromRawJson(taskId, string(prettyJSON.Bytes()))
 }
