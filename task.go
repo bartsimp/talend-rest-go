@@ -286,8 +286,11 @@ func (c *Client) ParseTask(t *TaskCreate) (*jTaskCreate, error) {
 	workspaceQuery := "name==" + t.Workspace.Name + ";environment.name==" + t.Workspace.Environment
 	workspaces, err := c.GetWorkspaces(workspaceQuery)
 
+	if len(workspaces) == 0 {
+		return nil, fmt.Errorf("workspace not found (%s)", workspaceQuery)
+	}
 	if len(workspaces) > 1 {
-		return nil, fmt.Errorf("workspace not unique")
+		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
 	jtask.WorkspaceId = workspaces[0].Id
 
@@ -549,14 +552,23 @@ func (c *Client) UpdateTaskRunConfig(taskRunConfig *TaskRunConfigRequest) (*Task
 	if err != nil {
 		return nil, err
 	}
+	if len(workspaces) == 0 {
+		return nil, fmt.Errorf("workspace not found (%s)", workspaceQuery)
+	}
 	if len(workspaces) > 1 {
-		return nil, fmt.Errorf("workspace not unique")
+		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
 	workspaceId := workspaces[0].Id
 
-	tasks, err := c.GetTasks(TaskQuery{Name: taskRunConfig.Name, WorkspaceId: workspaceId, Limit: 100, Offset: 0})
+	taskQuery := TaskQuery{Name: taskRunConfig.Name, WorkspaceId: workspaceId, Limit: 100, Offset: 0}
+	tasks, err := c.GetTasks(taskQuery)
+	if len(tasks.Items) == 0 {
+		strTaskQuery, _ := json.Marshal(taskQuery)
+		return nil, fmt.Errorf("task not found (%s)", strTaskQuery)
+	}
 	if len(tasks.Items) > 1 {
-		return nil, fmt.Errorf("task not unique")
+		strTaskQuery, _ := json.Marshal(taskQuery)
+		return nil, fmt.Errorf("task not unique (%s)", strTaskQuery)
 	}
 	taskId := tasks.Items[0].Executable
 

@@ -354,8 +354,11 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(workspaces) == 0 {
+		return nil, fmt.Errorf("workspace not found (%s)", workspaceQuery)
+	}
 	if len(workspaces) > 1 {
-		return nil, fmt.Errorf("workspace not unique")
+		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
 	jplan.WorkspaceId = workspaces[0].Id
 
@@ -366,38 +369,38 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 
 		jplan.Steps[i].TaskIds = make([]string, len(p.Steps[i].TaskIds))
 		for j := range p.Steps[i].TaskIds {
-			task, err := c.GetTasks(TaskQuery{
+			tasks, err := c.GetTasks(TaskQuery{
 				Name:        p.Steps[i].TaskIds[j],
 				WorkspaceId: workspaces[0].Id,
 				Limit:       100, Offset: 0})
-
 			if err != nil {
 				return nil, err
 			}
-
-			if len(task.Items) > 1 {
-				return nil, fmt.Errorf("task not unique")
+			if len(tasks.Items) == 0 {
+				return nil, fmt.Errorf("task not found (%s)", workspaceQuery)
 			}
-
-			jplan.Steps[i].TaskIds[j] = task.Items[0].Executable
+			if len(tasks.Items) > 1 {
+				return nil, fmt.Errorf("task not unique (%s)", workspaceQuery)
+			}
+			jplan.Steps[i].TaskIds[j] = tasks.Items[0].Executable
 		}
 
 		jplan.Steps[i].HandlerOnFailure.TaskIds = make([]string, len(p.Steps[i].HandlerOnFailure.TaskIds))
 		for k := range p.Steps[i].HandlerOnFailure.TaskIds {
-			task, err := c.GetTasks(TaskQuery{
+			tasks, err := c.GetTasks(TaskQuery{
 				Name:        p.Steps[i].HandlerOnFailure.TaskIds[k],
 				WorkspaceId: workspaces[0].Id,
 				Limit:       100, Offset: 0})
-
 			if err != nil {
 				return nil, err
 			}
-
-			if len(task.Items) > 1 {
-				return nil, fmt.Errorf("task not unique")
+			if len(tasks.Items) == 0 {
+				return nil, fmt.Errorf("task not found (%s)", workspaceQuery)
 			}
-
-			jplan.Steps[i].HandlerOnFailure.TaskIds[k] = task.Items[0].Executable
+			if len(tasks.Items) > 1 {
+				return nil, fmt.Errorf("task not unique (%s)", workspaceQuery)
+			}
+			jplan.Steps[i].HandlerOnFailure.TaskIds[k] = tasks.Items[0].Executable
 		}
 	}
 
