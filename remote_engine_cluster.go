@@ -126,7 +126,7 @@ func (c *Client) DeleteRemoteEngineClusters(clusterID string) error {
 }
 
 func (c *Client) GetRemoteEngineClustersRunProfile(clusterID string) (*[]ClusterRunProfile, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", clusterID), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineClusterURL+"/%s/run-profiles", clusterID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func (c *Client) GetRemoteEngineClustersRunProfile(clusterID string) (*[]Cluster
 }
 
 func (c *Client) GetRemoteEngineClustersRunProfileByProfileID(clusterID string, runProfileID string) (*[]ClusterRunProfile, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles/%s", clusterID, runProfileID), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineClusterURL+"/%s/run-profiles/%s", clusterID, runProfileID), nil)
 	if err != nil {
 		return nil, err
 	}

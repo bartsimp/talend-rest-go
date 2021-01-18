@@ -197,7 +197,7 @@ type ExecutionStep struct {
 	} `json:"flows,omitempty"`
 }
 
-type jPlanCreate struct {
+type JPlanCreate struct {
 	Name        string            `json:"name"`
 	WorkspaceID string            `json:"workspaceId"`
 	Description string            `json:"description,omitempty"`
@@ -292,10 +292,10 @@ func (c *Client) CreatePlan(p *PlanCreate) (*PlanCreated, error) {
 
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
-	return c.CreatePlanFromRawJson(string(prettyJSON.Bytes()))
+	return c.CreatePlanFromRawJSON(string(prettyJSON.Bytes()))
 }
 
-func (c *Client) CreatePlanFromRawJson(jsonRequest string) (*PlanCreated, error) {
+func (c *Client) CreatePlanFromRawJSON(jsonRequest string) (*PlanCreated, error) {
 	req, err := http.NewRequest(http.MethodPost, plansURL, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
@@ -325,7 +325,7 @@ func (c *Client) CreatePlanFromRawFile(jsonRawFile string) (*PlanCreated, error)
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.CreatePlanFromRawJson(text)
+	return c.CreatePlanFromRawJSON(text)
 }
 
 func (c *Client) DeletePlan(id string) error {
@@ -342,9 +342,9 @@ func (c *Client) DeletePlan(id string) error {
 	return nil
 }
 
-func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
+func (c *Client) ParsePlan(p *PlanCreate) (*JPlanCreate, error) {
 
-	var jplan jPlanCreate
+	var jplan JPlanCreate
 
 	jplan.Name = p.Name
 	jplan.Description = p.Description
@@ -360,7 +360,7 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 	if len(workspaces) > 1 {
 		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
-	jplan.WorkspaceID = workspaces[0].Id
+	jplan.WorkspaceID = workspaces[0].ID
 
 	jplan.Steps = make([]jPlanCreateStep, len(p.Steps))
 	for i := range p.Steps {
@@ -371,7 +371,7 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 		for j := range p.Steps[i].TaskIds {
 			tasks, err := c.GetTasks(TaskQuery{
 				Name:        p.Steps[i].TaskIds[j],
-				WorkspaceId: workspaces[0].Id,
+				WorkspaceID: workspaces[0].ID,
 				Limit:       100, Offset: 0})
 			if err != nil {
 				return nil, err
@@ -389,7 +389,7 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 		for k := range p.Steps[i].HandlerOnFailure.TaskIds {
 			tasks, err := c.GetTasks(TaskQuery{
 				Name:        p.Steps[i].HandlerOnFailure.TaskIds[k],
-				WorkspaceId: workspaces[0].Id,
+				WorkspaceID: workspaces[0].ID,
 				Limit:       100, Offset: 0})
 			if err != nil {
 				return nil, err
@@ -407,8 +407,8 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 	return &jplan, nil
 }
 
-func (c *Client) UpdatePlanFromRawJson(planId string, jsonRequest string) (*PlanCreated, error) {
-	req, err := http.NewRequest(http.MethodPut, plansURL+"/"+planId, strings.NewReader(jsonRequest))
+func (c *Client) UpdatePlanFromRawJSON(planID string, jsonRequest string) (*PlanCreated, error) {
+	req, err := http.NewRequest(http.MethodPut, plansURL+"/"+planID, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -430,27 +430,27 @@ func (c *Client) UpdatePlanFromRawJson(planId string, jsonRequest string) (*Plan
 	return &plan, nil
 }
 
-func (c *Client) UpdatePlanFromRawFile(planId string, jsonRawFile string) (*PlanCreated, error) {
+func (c *Client) UpdatePlanFromRawFile(planID string, jsonRawFile string) (*PlanCreated, error) {
 	content, err := ioutil.ReadFile(jsonRawFile)
 	if err != nil {
 		return nil, err
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.UpdatePlanFromRawJson(planId, text)
+	return c.UpdatePlanFromRawJSON(planID, text)
 }
 
-func (c *Client) UpdatePlanFromPlainFile(planId string, jsonPlanFile string) (*PlanCreated, error) {
+func (c *Client) UpdatePlanFromPlainFile(planID string, jsonPlanFile string) (*PlanCreated, error) {
 	content, err := ioutil.ReadFile(jsonPlanFile)
 	if err != nil {
 		return nil, err
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.UpdatePlanFromPlainJson(planId, text)
+	return c.UpdatePlanFromPlainJSON(planID, text)
 }
 
-func (c *Client) UpdatePlanFromPlainJson(planId string, jsonPlan string) (*PlanCreated, error) {
+func (c *Client) UpdatePlanFromPlainJSON(planID string, jsonPlan string) (*PlanCreated, error) {
 
 	var planCreate PlanCreate
 
@@ -459,10 +459,10 @@ func (c *Client) UpdatePlanFromPlainJson(planId string, jsonPlan string) (*PlanC
 		return nil, err
 	}
 
-	return c.UpdatePlan(planId, &planCreate)
+	return c.UpdatePlan(planID, &planCreate)
 }
 
-func (c *Client) UpdatePlan(planId string, p *PlanCreate) (*PlanCreated, error) {
+func (c *Client) UpdatePlan(planID string, p *PlanCreate) (*PlanCreated, error) {
 	jplan, err := c.ParsePlan(p)
 	if err != nil {
 		return nil, err
@@ -475,11 +475,11 @@ func (c *Client) UpdatePlan(planId string, p *PlanCreate) (*PlanCreated, error) 
 
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
-	return c.UpdatePlanFromRawJson(planId, string(prettyJSON.Bytes()))
+	return c.UpdatePlanFromRawJSON(planID, string(prettyJSON.Bytes()))
 }
 
-func (c *Client) GetPlanRunConfigByPlanId(planId string) (*PlanRunConfigResponse, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(plansURL+"/%s/run-config", planId), nil)
+func (c *Client) GetPlanRunConfigByPlanID(planID string) (*PlanRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(plansURL+"/%s/run-config", planID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -498,14 +498,14 @@ func (c *Client) GetPlanRunConfigByPlanId(planId string) (*PlanRunConfigResponse
 
 	var planRunConfigResponse PlanRunConfigResponse
 
-	planRunConfigResponse.PlanID = planId
+	planRunConfigResponse.PlanID = planID
 	planRunConfigResponse.PlanRunConfig = planrunconfig
 
 	return &planRunConfigResponse, nil
 }
 
-func (c *Client) DeletePlanRunConfigByPlanId(planId string) error {
-	req, err := http.NewRequest(http.MethodDelete, plansURL+"/"+planId+"/run-config", nil)
+func (c *Client) DeletePlanRunConfigByPlanID(planID string) error {
+	req, err := http.NewRequest(http.MethodDelete, plansURL+"/"+planID+"/run-config", nil)
 	if err != nil {
 		return err
 	}
@@ -518,18 +518,18 @@ func (c *Client) DeletePlanRunConfigByPlanId(planId string) error {
 	return nil
 }
 
-func (c *Client) UpdatePlanRunConfigFromRawFile(planId string, jsonRawFile string) (*PlanRunConfigResponse, error) {
+func (c *Client) UpdatePlanRunConfigFromRawFile(planID string, jsonRawFile string) (*PlanRunConfigResponse, error) {
 	content, err := ioutil.ReadFile(jsonRawFile)
 	if err != nil {
 		return nil, err
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.UpdatePlanRunConfigFromRawJson(planId, text)
+	return c.UpdatePlanRunConfigFromRawJSON(planID, text)
 }
 
-func (c *Client) UpdatePlanRunConfigFromRawJson(planId string, jsonRequest string) (*PlanRunConfigResponse, error) {
-	req, err := http.NewRequest(http.MethodPut, plansURL+"/"+planId+"/run-config", strings.NewReader(jsonRequest))
+func (c *Client) UpdatePlanRunConfigFromRawJSON(planID string, jsonRequest string) (*PlanRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodPut, plansURL+"/"+planID+"/run-config", strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -549,7 +549,7 @@ func (c *Client) UpdatePlanRunConfigFromRawJson(planId string, jsonRequest strin
 	}
 
 	var planrunconfigResponse PlanRunConfigResponse
-	planrunconfigResponse.PlanID = planId
+	planrunconfigResponse.PlanID = planID
 	planrunconfigResponse.PlanRunConfig = planrunconfig
 
 	return &planrunconfigResponse, nil
@@ -563,10 +563,10 @@ func (c *Client) UpdatePlanRunConfigFromPlainFile(jsonPlanRunConfigFile string) 
 	// Convert []byte to string and print to screen
 	text := string(content)
 
-	return c.UpdatePlanRunConfigFromPlainJson(text)
+	return c.UpdatePlanRunConfigFromPlainJSON(text)
 }
 
-func (c *Client) UpdatePlanRunConfigFromPlainJson(jsonPlanRunConfig string) (*PlanRunConfigResponse, error) {
+func (c *Client) UpdatePlanRunConfigFromPlainJSON(jsonPlanRunConfig string) (*PlanRunConfigResponse, error) {
 
 	var planRunConfigRequest PlanRunConfigRequest
 
@@ -588,13 +588,16 @@ func (c *Client) UpdatePlanRunConfig(planRunConfig *PlanRunConfigRequest) (*Plan
 	if len(workspaces) > 1 {
 		return nil, fmt.Errorf("workspace not unique")
 	}
-	workspaceId := workspaces[0].Id
+	workspaceID := workspaces[0].ID
 
-	plans, err := c.GetPlans(PlanQuery{Name: planRunConfig.Name, WorkspaceID: workspaceId, Limit: 100, Offset: 0})
+	plans, err := c.GetPlans(PlanQuery{Name: planRunConfig.Name, WorkspaceID: workspaceID, Limit: 100, Offset: 0})
+	if err != nil {
+		return nil, err
+	}
 	if len(plans.Items) > 1 {
 		return nil, fmt.Errorf("plan not unique")
 	}
-	planId := plans.Items[0].Executable
+	planID := plans.Items[0].Executable
 
 	j, err := json.Marshal(planRunConfig.PlanRunConfig)
 	if err != nil {
@@ -604,5 +607,5 @@ func (c *Client) UpdatePlanRunConfig(planRunConfig *PlanRunConfigRequest) (*Plan
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
 
-	return c.UpdatePlanRunConfigFromRawJson(planId, string(prettyJSON.Bytes()))
+	return c.UpdatePlanRunConfigFromRawJSON(planID, string(prettyJSON.Bytes()))
 }

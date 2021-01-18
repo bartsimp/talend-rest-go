@@ -6,15 +6,15 @@ import (
 	"net/http"
 )
 
-const WorkspacesUrl string = defaultRestURL + "/workspaces"
+const workspacesURL string = defaultRestURL + "/workspaces"
 
 type Workspace struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Owner       string `json:"owner"`
 	Type        string `json:"type"`
 	Environment struct {
-		Id          string `json:"id"`
+		ID          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Default     bool   `json:"default"`
@@ -22,7 +22,7 @@ type Workspace struct {
 }
 
 func (c *Client) GetWorkspaces(query string) ([]Workspace, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(WorkspacesUrl+"?query=%s", query), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(workspacesURL+"?query=%s", query), nil)
 	if err != nil {
 		return nil, err
 	}
