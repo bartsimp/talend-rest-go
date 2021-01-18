@@ -12,18 +12,18 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-const tasksURL string = defaultRestURL + "/executables/tasks"
+const TasksUrl string = defaultRestURL + "/executables/tasks"
 
 type TaskQuery struct {
 	Name                string `url:"name,omitempty"`
-	EnvironmentID       string `url:"environmentId,omitempty"`
-	WorkspaceID         string `url:"workspaceId,omitempty"`
+	EnvironmentId       string `url:"environmentId,omitempty"`
+	WorkspaceId         string `url:"workspaceId,omitempty"`
 	Limit               int    `url:"limit,omitempty"`
 	Offset              int    `url:"offset,omitempty"`
-	ArtifactID          string `url:"artifactId,omitempty"`
+	ArtifactId          string `url:"artifactId,omitempty"`
 	RuntimeType         string `url:"runtimeType,omitempty"`
-	RuntimeID           string `url:"runtimeId,omitempty"`
-	RuntimeRunProfileID string `url:"runtimeRunProfileId,omitempty"`
+	RuntimeId           string `url:"runtimeId,omitempty"`
+	RuntimeRunProfileId string `url:"runtimeRunProfileId,omitempty"`
 }
 
 type TaskCreate struct {
@@ -48,37 +48,37 @@ type TaskCreate struct {
 }
 
 type TaskCreated struct {
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	WorkspaceIS string `json:"workspaceId"`
+	WorkspaceId string `json:"workspaceId"`
 	Artifact    struct {
-		ID      string `json:"id"`
+		Id      string `json:"id"`
 		Name    string `json:"name"`
 		Version string `json:"version"`
 	} `json:"artifact"`
 }
 
-type JTaskAvailable struct {
+type jTaskAvailable struct {
 	Items []struct {
 		Executable string `json:"executable"`
 		Name       string `json:"name"`
 		Workspace  struct {
-			ID          string `json:"id"`
+			Id          string `json:"id"`
 			Name        string `json:"name"`
 			Owner       string `json:"owner"`
 			Type        string `json:"type"`
 			Environment struct {
-				ID          string `json:"id"`
+				Id          string `json:"id"`
 				Name        string `json:"name"`
 				Description string `json:"description"`
 				Default     bool   `json:"default"`
 			} `json:"environment"`
 		} `json:"workspace"`
-		ArtifactID string `json:"artifactId"`
+		ArtifactId string `json:"artifactId"`
 		Runtime    struct {
 			Type string `json:"type"`
-			ID   string `json:"id"`
+			Id   string `json:"id"`
 		} `json:"runtime"`
 	} `json:"items"`
 	Limit  int `json:"limit"`
@@ -86,18 +86,18 @@ type JTaskAvailable struct {
 	Total  int `json:"total"`
 }
 
-type TaskByID struct {
-	ID          string `json:"id"`
+type TaskById struct {
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Workspace   struct {
-		ID          string `json:"id"`
+		Id          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Owner       string `json:"owner"`
 		Type        string `json:"type"`
 		Environment struct {
-			ID          string `json:"id"`
+			Id          string `json:"id"`
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			Default     bool   `json:"default"`
@@ -105,7 +105,7 @@ type TaskByID struct {
 	} `json:"workspace"`
 	Version  string `json:"version"`
 	Artifact struct {
-		ID      string `json:"id"`
+		Id      string `json:"id"`
 		Name    string `json:"name"`
 		Version string `json:"version"`
 	} `json:"artifact"`
@@ -120,8 +120,8 @@ type TaskByID struct {
 	} `json:"autoUpgradeInfo,omitempty"`
 }
 
-type JTaskCreate struct {
-	WorkspaceID string            `json:"workspaceId"`
+type jTaskCreate struct {
+	WorkspaceId string            `json:"workspaceId"`
 	Name        string            `json:"name"`
 	Description string            `json:"description"`
 	Tags        []string          `json:"tags,omitempty"`
@@ -129,7 +129,7 @@ type JTaskCreate struct {
 	Parameters  map[string]string `json:"parameters,omitempty"`
 	Resources   map[string]string `json:"resources,omitempty"`
 	Artifact    struct {
-		ID      string `json:"id"`
+		Id      string `json:"id"`
 		Version string `json:"version"`
 	} `json:"artifact"`
 	//	AutoUpgradeInfo struct {
@@ -137,7 +137,7 @@ type JTaskCreate struct {
 	//		OverrideWithDefaultParameters bool `json:"overrideWithDefaultParameters"`
 	//		AutoUpgradeFailed             bool `json:"autoUpgradeFailed"`
 	//	} `json:"autoUpgradeInfo,omitempty"`
-	EnvironmentID string `json:"environmentId,omitempty"`
+	EnvironmentId string `json:"environmentId,omitempty"`
 }
 
 type TaskRunConfigRequest struct {
@@ -150,7 +150,7 @@ type TaskRunConfigRequest struct {
 }
 
 type TaskRunConfigResponse struct {
-	TaskID        string        `json:"taskId"`
+	TaskId        string        `json:"taskId"`
 	TaskRunConfig TaskRunConfig `json:"taskRunConfig"`
 }
 
@@ -179,25 +179,25 @@ type TaskRunConfig struct {
 			TriggerCalls   int    `json:"triggerCalls,omitempty"`
 			TriggerTimeout int    `json:"triggerTimeout,omitempty"`
 			RunAsUser      string `json:"runAsUser,omitempty"`
-			NewURL         bool   `json:"newUrl,omitempty"`
-			URL            string `json:"url,omitempty"`
+			NewUrl         bool   `json:"newUrl,omitempty"`
+			Url            string `json:"url,omitempty"`
 		} `json:"webhook,omitempty"`
 	} `json:"trigger,omitempty"`
 	Runtime struct {
 		Type         string `json:"type"`         // "type": "CLOUD",
-		ID           string `json:"id"`           // "id": "5c9a51dc7b353e43c7fc787c",
-		EngineID     string `json:"engineId"`     // "engineId": "5c9a51dc7b353e43c7fc787c",
-		ClusterID    string `json:"clusterId"`    // "clusterId": "5c9a51dc7b353e43c7fc787c",
-		RunProfileID string `json:"runProfileId"` // "runProfileId": "5c9a51dc7b353e43c7fc783c"
+		Id           string `json:"id"`           // "id": "5c9a51dc7b353e43c7fc787c",
+		EngineId     string `json:"engineId"`     // "engineId": "5c9a51dc7b353e43c7fc787c",
+		ClusterId    string `json:"clusterId"`    // "clusterId": "5c9a51dc7b353e43c7fc787c",
+		RunProfileId string `json:"runProfileId"` // "runProfileId": "5c9a51dc7b353e43c7fc783c"
 	} `json:"runtime,omitempty"`
 	ParallelExecutionAllowed bool   `json:"parallelExecutionAllowed,omitempty"`
 	LogLevel                 string `json:"logLevel,omitempty"`
 	RemoteRunAsUser          string `json:"remoteRunAsUser,omitempty"`
 }
 
-func (c *Client) GetTasks(taskQuery TaskQuery) (*JTaskAvailable, error) {
+func (c *Client) GetTasks(taskQuery TaskQuery) (*jTaskAvailable, error) {
 	queryParms, _ := query.Values(taskQuery)
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(tasksURL+"?%s", queryParms.Encode()), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(TasksUrl+"?%s", queryParms.Encode()), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +207,7 @@ func (c *Client) GetTasks(taskQuery TaskQuery) (*JTaskAvailable, error) {
 		return nil, err
 	}
 
-	var tasks JTaskAvailable
+	var tasks jTaskAvailable
 
 	err = json.Unmarshal(res, &tasks)
 	if err != nil {
@@ -217,8 +217,8 @@ func (c *Client) GetTasks(taskQuery TaskQuery) (*JTaskAvailable, error) {
 	return &tasks, nil
 }
 
-func (c *Client) GetTaskByID(id string) (*TaskByID, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(tasksURL+"/%s", id), nil)
+func (c *Client) GetTaskById(id string) (*TaskById, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(TasksUrl+"/%s", id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -228,7 +228,7 @@ func (c *Client) GetTaskByID(id string) (*TaskByID, error) {
 		return nil, err
 	}
 
-	var task TaskByID
+	var task TaskById
 
 	err = json.Unmarshal(res, &task)
 	if err != nil {
@@ -238,8 +238,8 @@ func (c *Client) GetTaskByID(id string) (*TaskByID, error) {
 	return &task, nil
 }
 
-func (c *Client) CreateTaskFromRawJSON(jsonRequest string) (*TaskCreated, error) {
-	req, err := http.NewRequest(http.MethodPost, tasksURL, strings.NewReader(jsonRequest))
+func (c *Client) CreateTaskFromRawJson(jsonRequest string) (*TaskCreated, error) {
+	req, err := http.NewRequest(http.MethodPost, TasksUrl, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -274,11 +274,11 @@ func (c *Client) CreateTask(t *TaskCreate) (*TaskCreated, error) {
 
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
-	return c.CreateTaskFromRawJSON(string(prettyJSON.Bytes()))
+	return c.CreateTaskFromRawJson(string(prettyJSON.Bytes()))
 }
 
-func (c *Client) ParseTask(t *TaskCreate) (*JTaskCreate, error) {
-	var jtask JTaskCreate
+func (c *Client) ParseTask(t *TaskCreate) (*jTaskCreate, error) {
+	var jtask jTaskCreate
 
 	jtask.Name = t.Name
 	jtask.Description = t.Description
@@ -294,7 +294,7 @@ func (c *Client) ParseTask(t *TaskCreate) (*JTaskCreate, error) {
 	if len(workspaces) > 1 {
 		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
-	jtask.WorkspaceID = workspaces[0].ID
+	jtask.WorkspaceId = workspaces[0].Id
 
 	jtask.Parameters = t.Parameters
 
@@ -303,11 +303,11 @@ func (c *Client) ParseTask(t *TaskCreate) (*JTaskCreate, error) {
 	artifact, err := c.GetArtifacts(
 		ArtifactQuery{
 			Name:        t.Artifact.Name,
-			WorkspaceID: workspaces[0].ID})
+			WorkspaceID: workspaces[0].Id})
 
 	for i := range artifact.Items {
 		if artifact.Items[i].Workspace.Environment.Name == t.Workspace.Environment {
-			jtask.Artifact.ID = artifact.Items[i].ID
+			jtask.Artifact.Id = artifact.Items[i].ID
 			jtask.Artifact.Version = ""
 			for j := range artifact.Items[i].Versions {
 				if artifact.Items[i].Versions[j] > jtask.Artifact.Version {
@@ -328,7 +328,7 @@ func (c *Client) ParseTask(t *TaskCreate) (*JTaskCreate, error) {
 
 	// EnvironmentId is required in create not in update
 	if t.Environment != "" {
-		jtask.EnvironmentID = workspaces[0].Environment.ID
+		jtask.EnvironmentId = workspaces[0].Environment.Id
 	}
 
 	return &jtask, err
@@ -341,7 +341,7 @@ func (c *Client) CreateTaskFromRawFile(jsonRawFile string) (*TaskCreated, error)
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.CreateTaskFromRawJSON(text)
+	return c.CreateTaskFromRawJson(text)
 }
 
 func (c *Client) CreateTaskFromPlainFile(jsonTaskFile string) (*TaskCreated, error) {
@@ -360,7 +360,7 @@ func (c *Client) CreateTaskFromPlainFile(jsonTaskFile string) (*TaskCreated, err
 	return c.CreateTask(&taskCreate)
 }
 
-func (c *Client) CreateTaskFromPlainJSON(jsonTask string) (*TaskCreated, error) {
+func (c *Client) CreateTaskFromPlainJson(jsonTask string) (*TaskCreated, error) {
 	var taskCreate TaskCreate
 
 	err := json.Unmarshal([]byte(jsonTask), &taskCreate)
@@ -371,13 +371,13 @@ func (c *Client) CreateTaskFromPlainJSON(jsonTask string) (*TaskCreated, error) 
 	return c.CreateTask(&taskCreate)
 }
 
-func (c *Client) UpdateTask(taskID string, t *TaskCreate) (*TaskCreated, error) {
+func (c *Client) UpdateTask(taskId string, t *TaskCreate) (*TaskCreated, error) {
 	jtask, err := c.ParseTask(t)
 	if err != nil {
 		return nil, err
 	}
 
-	jtask.EnvironmentID = "" // EnvironmentId is required in create not in update
+	jtask.EnvironmentId = "" // EnvironmentId is required in create not in update
 
 	j, err := json.Marshal(jtask)
 	if err != nil {
@@ -386,10 +386,10 @@ func (c *Client) UpdateTask(taskID string, t *TaskCreate) (*TaskCreated, error) 
 
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
-	return c.UpdateTaskFromRawJSON(taskID, string(prettyJSON.Bytes()))
+	return c.UpdateTaskFromRawJson(taskId, string(prettyJSON.Bytes()))
 }
 
-func (c *Client) UpdateTaskFromPlainJSON(taskID string, jsonTask string) (*TaskCreated, error) {
+func (c *Client) UpdateTaskFromPlainJson(taskId string, jsonTask string) (*TaskCreated, error) {
 	var taskCreate TaskCreate
 
 	err := json.Unmarshal([]byte(jsonTask), &taskCreate)
@@ -397,21 +397,21 @@ func (c *Client) UpdateTaskFromPlainJSON(taskID string, jsonTask string) (*TaskC
 		return nil, err
 	}
 
-	return c.UpdateTask(taskID, &taskCreate)
+	return c.UpdateTask(taskId, &taskCreate)
 }
 
-func (c *Client) UpdateTaskFromRawFile(taskID string, jsonRawFile string) (*TaskCreated, error) {
+func (c *Client) UpdateTaskFromRawFile(taskId string, jsonRawFile string) (*TaskCreated, error) {
 	content, err := ioutil.ReadFile(jsonRawFile)
 	if err != nil {
 		return nil, err
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.UpdateTaskFromRawJSON(taskID, text)
+	return c.UpdateTaskFromRawJson(taskId, text)
 }
 
-func (c *Client) UpdateTaskFromRawJSON(taskID string, jsonRequest string) (*TaskCreated, error) {
-	req, err := http.NewRequest(http.MethodPut, tasksURL+"/"+taskID, strings.NewReader(jsonRequest))
+func (c *Client) UpdateTaskFromRawJson(taskId string, jsonRequest string) (*TaskCreated, error) {
+	req, err := http.NewRequest(http.MethodPut, TasksUrl+"/"+taskId, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -434,7 +434,7 @@ func (c *Client) UpdateTaskFromRawJSON(taskID string, jsonRequest string) (*Task
 }
 
 func (c *Client) DeleteTask(id string) error {
-	req, err := http.NewRequest(http.MethodDelete, tasksURL+"/"+id, nil)
+	req, err := http.NewRequest(http.MethodDelete, TasksUrl+"/"+id, nil)
 	if err != nil {
 		return err
 	}
@@ -447,8 +447,8 @@ func (c *Client) DeleteTask(id string) error {
 	return nil
 }
 
-func (c *Client) GetTaskRunConfigByTaskID(taskID string) (*TaskRunConfigResponse, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(tasksURL+"/%s/run-config", taskID), nil)
+func (c *Client) GetTaskRunConfigByTaskId(taskId string) (*TaskRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(TasksUrl+"/%s/run-config", taskId), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -467,14 +467,14 @@ func (c *Client) GetTaskRunConfigByTaskID(taskID string) (*TaskRunConfigResponse
 
 	var taskRunConfigResponse TaskRunConfigResponse
 
-	taskRunConfigResponse.TaskID = taskID
+	taskRunConfigResponse.TaskId = taskId
 	taskRunConfigResponse.TaskRunConfig = taskrunconfig
 
 	return &taskRunConfigResponse, nil
 }
 
-func (c *Client) DeleteTaskRunConfigByTaskID(taskID string) error {
-	req, err := http.NewRequest(http.MethodDelete, tasksURL+"/"+taskID+"/run-config", nil)
+func (c *Client) DeleteTaskRunConfigByTaskId(taskId string) error {
+	req, err := http.NewRequest(http.MethodDelete, TasksUrl+"/"+taskId+"/run-config", nil)
 	if err != nil {
 		return err
 	}
@@ -487,18 +487,18 @@ func (c *Client) DeleteTaskRunConfigByTaskID(taskID string) error {
 	return nil
 }
 
-func (c *Client) UpdateTaskRunConfigFromRawFile(taskID string, jsonRawFile string) (*TaskRunConfigResponse, error) {
+func (c *Client) UpdateTaskRunConfigFromRawFile(taskId string, jsonRawFile string) (*TaskRunConfigResponse, error) {
 	content, err := ioutil.ReadFile(jsonRawFile)
 	if err != nil {
 		return nil, err
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.UpdateTaskRunConfigFromRawJSON(taskID, text)
+	return c.UpdateTaskRunConfigFromRawJson(taskId, text)
 }
 
-func (c *Client) UpdateTaskRunConfigFromRawJSON(taskID string, jsonRequest string) (*TaskRunConfigResponse, error) {
-	req, err := http.NewRequest(http.MethodPut, tasksURL+"/"+taskID+"/run-config", strings.NewReader(jsonRequest))
+func (c *Client) UpdateTaskRunConfigFromRawJson(taskId string, jsonRequest string) (*TaskRunConfigResponse, error) {
+	req, err := http.NewRequest(http.MethodPut, TasksUrl+"/"+taskId+"/run-config", strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -518,7 +518,7 @@ func (c *Client) UpdateTaskRunConfigFromRawJSON(taskID string, jsonRequest strin
 	}
 
 	var taskrunconfigResponse TaskRunConfigResponse
-	taskrunconfigResponse.TaskID = taskID
+	taskrunconfigResponse.TaskId = taskId
 	taskrunconfigResponse.TaskRunConfig = taskrunconfig
 
 	return &taskrunconfigResponse, nil
@@ -532,10 +532,10 @@ func (c *Client) UpdateTaskRunConfigFromPlainFile(jsonTaskRunConfigFile string) 
 	// Convert []byte to string and print to screen
 	text := string(content)
 
-	return c.UpdateTaskRunConfigFromPlainJSON(text)
+	return c.UpdateTaskRunConfigFromPlainJson(text)
 }
 
-func (c *Client) UpdateTaskRunConfigFromPlainJSON(jsonTaskRunConfig string) (*TaskRunConfigResponse, error) {
+func (c *Client) UpdateTaskRunConfigFromPlainJson(jsonTaskRunConfig string) (*TaskRunConfigResponse, error) {
 
 	var taskRunConfigRequest TaskRunConfigRequest
 
@@ -560,9 +560,9 @@ func (c *Client) UpdateTaskRunConfig(taskRunConfig *TaskRunConfigRequest) (*Task
 	if len(workspaces) > 1 {
 		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
-	workspaceID := workspaces[0].ID
+	workspaceId := workspaces[0].Id
 
-	taskQuery := TaskQuery{Name: taskRunConfig.Name, WorkspaceID: workspaceID, Limit: 100, Offset: 0}
+	taskQuery := TaskQuery{Name: taskRunConfig.Name, WorkspaceId: workspaceId, Limit: 100, Offset: 0}
 	tasks, err := c.GetTasks(taskQuery)
 	if err != nil {
 		return nil, err
@@ -575,7 +575,7 @@ func (c *Client) UpdateTaskRunConfig(taskRunConfig *TaskRunConfigRequest) (*Task
 		strTaskQuery, _ := json.Marshal(taskQuery)
 		return nil, fmt.Errorf("task not unique (%s)", strTaskQuery)
 	}
-	taskID := tasks.Items[0].Executable
+	taskId := tasks.Items[0].Executable
 
 	j, err := json.Marshal(taskRunConfig.TaskRunConfig)
 	if err != nil {
@@ -585,5 +585,5 @@ func (c *Client) UpdateTaskRunConfig(taskRunConfig *TaskRunConfigRequest) (*Task
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, j, "", "  ")
 
-	return c.UpdateTaskRunConfigFromRawJSON(taskID, string(prettyJSON.Bytes()))
+	return c.UpdateTaskRunConfigFromRawJson(taskId, string(prettyJSON.Bytes()))
 }

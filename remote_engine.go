@@ -6,20 +6,20 @@ import (
 	"net/http"
 )
 
-const remoteEngineURL string = defaultRestURL + "/runtimes/remote-engines"
+const RemoteEngineUrl string = defaultRestURL + "/runtimes/remote-engines"
 
 type RemoteEngine struct {
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Workspace   struct {
-		ID          string `json:"id"`
+		Id          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Owner       string `json:"workspace"`
 		Type        string `json:"type"`
 		Environment struct {
-			ID          string `json:"id"`
+			Id          string `json:"id"`
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			Default     bool   `json:"default"`
@@ -27,34 +27,34 @@ type RemoteEngine struct {
 	} `json:"workspace"`
 	CreateDate    int      `json:"createDate"`
 	UpdateDate    int      `json:"updateDate"`
-	RuntimeID     string   `json:"runtimeId"`
+	RuntimeId     string   `json:"runtimeId"`
 	Availability  string   `json:"availability"`
 	Managed       bool     `json:"managed"`
-	EnvironmentID string   `json:"environmentId"`
-	WorkspaceID   string   `json:"workspaceId"`
+	EnvironmentId string   `json:"environmentId"`
+	WorkspaceId   string   `json:"workspaceId"`
 	Status        string   `json:"status"`
 	RunProfiles   []string `json:"runProfiles"`
 	Debug         struct {
 		Host string `json:"host"`
 	} `json:"debug"`
-	ClusterID        string `json:"clusterId"`
+	ClusterId        string `json:"clusterId"`
 	PreAuthorizedKey string `json:"preAuthorizedKey"`
 }
 
 type RuntimeRunProfile struct {
-	ID           string   `json:"id,omitempty"`
+	Id           string   `json:"id,omitempty"`
 	Name         string   `json:"name,omitempty"`
 	Description  string   `json:"description,omitempty"`
 	CreateDate   string   `json:"createDate,omitempty"`
 	UpdateDate   string   `json:"updateDate,omitempty"`
 	Type         string   `json:"type,omitempty"`
 	JvmArguments []string `json:"jvmArguments,omitempty"`
-	RuntimeID    string   `json:"runtimeId,omitempty"`
+	RuntimeId    string   `json:"runtimeId,omitempty"`
 	Version      int      `json:"version,omitempty"`
 }
 
 func (c *Client) GetRemoteEngines(searchQuery string) (*[]RemoteEngine, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineURL+"?query=%s", searchQuery), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"?query=%s", searchQuery), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +74,8 @@ func (c *Client) GetRemoteEngines(searchQuery string) (*[]RemoteEngine, error) {
 	return &re, nil
 }
 
-func (c *Client) GetRemoteEnginesByEngineID(engineID string) (*RemoteEngine, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineURL+"/%s", engineID), nil)
+func (c *Client) GetRemoteEnginesByEngineId(engineId string) (*RemoteEngine, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s", engineId), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +95,8 @@ func (c *Client) GetRemoteEnginesByEngineID(engineID string) (*RemoteEngine, err
 	return &re, nil
 }
 
-func (c *Client) DeleteRemoteEngines(engineID string) error {
-	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf(remoteEngineURL+"/%s", engineID), nil)
+func (c *Client) DeleteRemoteEngines(engineId string) error {
+	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf(RemoteEngineUrl+"/%s", engineId), nil)
 	if err != nil {
 		return err
 	}
@@ -109,8 +109,8 @@ func (c *Client) DeleteRemoteEngines(engineID string) error {
 	return nil
 }
 
-func (c *Client) GetRemoteEnginesRunProfile(engineID string) (*[]RuntimeRunProfile, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineURL+"/%s/run-profiles", engineID), nil)
+func (c *Client) GetRemoteEnginesRunProfile(engineId string) (*[]RuntimeRunProfile, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", engineId), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -130,8 +130,8 @@ func (c *Client) GetRemoteEnginesRunProfile(engineID string) (*[]RuntimeRunProfi
 	return &rerp, nil
 }
 
-func (c *Client) GetRemoteEnginesRunProfileByProfileID(engineID string, runProfileID string) (*RuntimeRunProfile, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineURL+"/%s/run-profiles/%s", engineID, runProfileID), nil)
+func (c *Client) GetRemoteEnginesRunProfileByProfileId(engineId string, runProfileId string) (*RuntimeRunProfile, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles/%s", engineId, runProfileId), nil)
 	if err != nil {
 		return nil, err
 	}
