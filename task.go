@@ -12,7 +12,7 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-const TasksUrl string = DefaultRestUrl + "/executables/tasks"
+const TasksUrl string = defaultRestURL + "/executables/tasks"
 
 type TaskQuery struct {
 	Name                string `url:"name,omitempty"`
@@ -301,11 +301,11 @@ func (c *Client) ParseTask(t *TaskCreate) (*jTaskCreate, error) {
 	artifact, err := c.GetArtifacts(
 		ArtifactQuery{
 			Name:        t.Artifact.Name,
-			WorkspaceId: workspaces[0].Id})
+			WorkspaceID: workspaces[0].Id})
 
 	for i := range artifact.Items {
 		if artifact.Items[i].Workspace.Environment.Name == t.Workspace.Environment {
-			jtask.Artifact.Id = artifact.Items[i].Id
+			jtask.Artifact.Id = artifact.Items[i].ID
 			jtask.Artifact.Version = ""
 			for j := range artifact.Items[i].Versions {
 				if artifact.Items[i].Versions[j] > jtask.Artifact.Version {

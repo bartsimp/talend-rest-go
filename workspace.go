@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const WorkspacesUrl string = DefaultRestUrl + "/workspaces"
+const WorkspacesUrl string = defaultRestURL + "/workspaces"
 
 type Workspace struct {
 	Id          string `json:"id"`

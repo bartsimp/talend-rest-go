@@ -7,20 +7,20 @@ import (
 	"strings"
 )
 
-const RemoteEngineClusterUrl string = DefaultRestUrl + "/runtimes/remote-engine-clusters"
+const remoteEngineClusterURL string = defaultRestURL + "/runtimes/remote-engine-clusters"
 
 type RemoteEngineCluster struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Workspace   struct {
-		Id          string `json:"id"`
+		ID          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Owner       string `json:"workspace"`
 		Type        string `json:"type"`
 		Environment struct {
-			Id          string `json:"id"`
+			ID          string `json:"id"`
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			Default     bool   `json:"default"`
@@ -28,25 +28,26 @@ type RemoteEngineCluster struct {
 	} `json:"workspace"`
 	CreateDate   int    `json:"createDate"`
 	UpdateDate   int    `json:"updateDate"`
-	RuntimeId    string `json:"runtimeId"`
+	RuntimeID    string `json:"runtimeId"`
 	Availability string `json:"availability"`
 	Managed      bool   `json:"managed"`
 }
 
 type ClusterRunProfile struct {
-	Id           string   `json:"id,omitempty"`
+	ID           string   `json:"id,omitempty"`
 	Name         string   `json:"name,omitempty"`
 	Description  string   `json:"description,omitempty"`
 	CreateDate   string   `json:"createDate,omitempty"`
 	UpdateDate   string   `json:"updateDate,omitempty"`
 	Type         string   `json:"type,omitempty"`
 	JvmArguments []string `json:"jvmArguments,omitempty"`
-	RuntimeId    string   `json:"runtimeId,omitempty"`
+	RuntimeID    string   `json:"runtimeId,omitempty"`
 	Version      int      `json:"version,omitempty"`
 }
 
+// GetRemoteEngineClusters return remote engines cluster details
 func (c *Client) GetRemoteEngineClusters(searchQuery string) (*[]RemoteEngineCluster, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineClusterUrl+"?_s=%s", searchQuery), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineClusterURL+"?_s=%s", searchQuery), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +67,8 @@ func (c *Client) GetRemoteEngineClusters(searchQuery string) (*[]RemoteEngineClu
 	return &rec, nil
 }
 
-func (c *Client) GetRemoteEngineClustersByClusterId(clusterId string) (*RemoteEngineCluster, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineClusterUrl+"/%s", clusterId), nil)
+func (c *Client) GetRemoteEngineClustersByClusterID(clusterID string) (*RemoteEngineCluster, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(remoteEngineClusterURL+"/%s", clusterID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -87,8 +88,8 @@ func (c *Client) GetRemoteEngineClustersByClusterId(clusterId string) (*RemoteEn
 	return &rec, nil
 }
 
-func (c *Client) CreateRemoteEngineClustersFromRawJson(jsonRequest string) (*RemoteEngineCluster, error) {
-	req, err := http.NewRequest(http.MethodPost, RemoteEngineClusterUrl, strings.NewReader(jsonRequest))
+func (c *Client) CreateRemoteEngineClustersFromRawJSON(jsonRequest string) (*RemoteEngineCluster, error) {
+	req, err := http.NewRequest(http.MethodPost, remoteEngineClusterURL, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -110,8 +111,8 @@ func (c *Client) CreateRemoteEngineClustersFromRawJson(jsonRequest string) (*Rem
 	return &response, nil
 }
 
-func (c *Client) DeleteRemoteEngineClusters(clusterId string) error {
-	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf(RemoteEngineClusterUrl+"/%s", clusterId), nil)
+func (c *Client) DeleteRemoteEngineClusters(clusterID string) error {
+	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf(remoteEngineClusterURL+"/%s", clusterID), nil)
 	if err != nil {
 		return err
 	}
@@ -124,8 +125,8 @@ func (c *Client) DeleteRemoteEngineClusters(clusterId string) error {
 	return nil
 }
 
-func (c *Client) GetRemoteEngineClustersRunProfile(clusterId string) (*[]ClusterRunProfile, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", clusterId), nil)
+func (c *Client) GetRemoteEngineClustersRunProfile(clusterID string) (*[]ClusterRunProfile, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles", clusterID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +146,8 @@ func (c *Client) GetRemoteEngineClustersRunProfile(clusterId string) (*[]Cluster
 	return &crp, nil
 }
 
-func (c *Client) GetRemoteEngineClustersRunProfileByProfileId(clusterId string, runProfileId string) (*[]ClusterRunProfile, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles/%s", clusterId, runProfileId), nil)
+func (c *Client) GetRemoteEngineClustersRunProfileByProfileID(clusterID string, runProfileID string) (*[]ClusterRunProfile, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(RemoteEngineUrl+"/%s/run-profiles/%s", clusterID, runProfileID), nil)
 	if err != nil {
 		return nil, err
 	}

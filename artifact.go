@@ -8,21 +8,22 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-const ArtifactsUrl string = DefaultRestUrl + "/artifacts"
+const artifactsURL string = defaultRestURL + "/artifacts"
 
-type jArtifact struct {
+// JArtifact Artifact response details
+type JArtifact struct {
 	Items []struct {
-		Id        string   `json:"id"`
+		ID        string   `json:"id"`
 		Name      string   `json:"name"`
 		Type      string   `json:"type"`
 		Versions  []string `json:"versions"`
 		Workspace struct {
-			Id          string `json:"id"`
+			ID          string `json:"id"`
 			Name        string `json:"name"`
 			Owner       string `json:"owner"`
 			Type        string `json:"type"`
 			Environment struct {
-				Id          string `json:"id"`
+				ID          string `json:"id"`
 				Name        string `json:"name"`
 				Description string `json:"description"`
 				Default     bool   `json:"default"`
@@ -34,17 +35,19 @@ type jArtifact struct {
 	Total  int `json:"total"`
 }
 
+// ArtifactQuery Artifact query details
 type ArtifactQuery struct {
 	Name          string `url:"name,omitempty"`
-	WorkspaceId   string `url:"workspaceId,omitempty"`
-	EnvironmentId string `url:"environmentId,omitempty"`
+	WorkspaceID   string `url:"workspaceId,omitempty"`
+	EnvironmentID string `url:"environmentId,omitempty"`
 	Limit         int    `url:"limit,omitempty"`
 	Offset        int    `url:"offset,omitempty"`
 }
 
-func (c *Client) GetArtifacts(artifactQuery ArtifactQuery) (*jArtifact, error) {
+// GetArtifacts Get available Artifacts
+func (c *Client) GetArtifacts(artifactQuery ArtifactQuery) (*JArtifact, error) {
 	queryParms, _ := query.Values(artifactQuery)
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(ArtifactsUrl+"?%s", queryParms.Encode()), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(artifactsURL+"?%s", queryParms.Encode()), nil)
 
 	if err != nil {
 		return nil, err
@@ -55,7 +58,7 @@ func (c *Client) GetArtifacts(artifactQuery ArtifactQuery) (*jArtifact, error) {
 		return nil, err
 	}
 
-	var artifacts jArtifact
+	var artifacts JArtifact
 	err = json.Unmarshal(res, &artifacts)
 	if err != nil {
 		return nil, err

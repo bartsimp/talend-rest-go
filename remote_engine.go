@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const RemoteEngineUrl string = DefaultRestUrl + "/runtimes/remote-engines"
+const RemoteEngineUrl string = defaultRestURL + "/runtimes/remote-engines"
 
 type RemoteEngine struct {
 	Id          string `json:"id"`

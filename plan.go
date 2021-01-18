@@ -11,13 +11,13 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-const PlansUrl string = DefaultRestUrl + "/executables/plans"
+const plansURL string = defaultRestURL + "/executables/plans"
 
 type PlanQuery struct {
 	Name          string `url:"name,omitempty"`
-	TaskId        string `url:"taskId,omitempty"`
-	EnvironmentId string `url:"environmentId,omitempty"`
-	WorkspaceId   string `url:"workspaceId,omitempty"`
+	TaskID        string `url:"taskId,omitempty"`
+	EnvironmentID string `url:"environmentId,omitempty"`
+	WorkspaceID   string `url:"workspaceId,omitempty"`
 	Limit         int    `url:"limit,omitempty"`
 	Offset        int    `url:"offset,omitempty"`
 }
@@ -41,10 +41,10 @@ type PlanCreate struct {
 }
 
 type PlanCreated struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	WorkspaceId string `json:"workspaceId"`
+	WorkspaceID string `json:"workspaceId"`
 	//	Artifact     ArtifactCreated `json:"artifact"`
 }
 
@@ -58,7 +58,7 @@ type PlanRunConfigRequest struct {
 }
 
 type PlanRunConfigResponse struct {
-	PlanId        string        `json:"planId"`
+	PlanID        string        `json:"planId"`
 	PlanRunConfig PlanRunConfig `json:"planRunConfig"`
 }
 
@@ -87,16 +87,16 @@ type PlanRunConfig struct {
 			TriggerCalls   int    `json:"triggerCalls,omitempty"`
 			TriggerTimeout int    `json:"triggerTimeout,omitempty"`
 			RunAsUser      string `json:"runAsUser,omitempty"`
-			NewUrl         bool   `json:"newUrl,omitempty"`
-			Url            string `json:"url,omitempty"`
+			NewURL         bool   `json:"newUrl,omitempty"`
+			URL            string `json:"url,omitempty"`
 		} `json:"webhook,omitempty"`
 	} `json:"trigger,omitempty"`
 	Runtime struct {
 		Type         string `json:"type"`         // "type": "CLOUD",
-		Id           string `json:"id"`           // "id": "5c9a51dc7b353e43c7fc787c",
-		EngineId     string `json:"engineId"`     // "engineId": "5c9a51dc7b353e43c7fc787c",
-		ClusterId    string `json:"clusterId"`    // "clusterId": "5c9a51dc7b353e43c7fc787c",
-		RunProfileId string `json:"runProfileId"` // "runProfileId": "5c9a51dc7b353e43c7fc783c"
+		ID           string `json:"id"`           // "id": "5c9a51dc7b353e43c7fc787c",
+		EngineID     string `json:"engineId"`     // "engineId": "5c9a51dc7b353e43c7fc787c",
+		ClusterID    string `json:"clusterId"`    // "clusterId": "5c9a51dc7b353e43c7fc787c",
+		RunProfileID string `json:"runProfileId"` // "runProfileId": "5c9a51dc7b353e43c7fc783c"
 	} `json:"runtime,omitempty"`
 	ParallelExecutionAllowed bool `json:"parallelExecutionAllowed,omitempty"`
 }
@@ -106,21 +106,21 @@ type PlanAvailable struct {
 		Executable string `json:"executable"`
 		Name       string `json:"name"`
 		Workspace  struct {
-			Id          string `json:"id"`
+			ID          string `json:"id"`
 			Name        string `json:"name"`
 			Owner       string `json:"owner"`
 			Type        string `json:"type"`
 			Environment struct {
-				Id          string `json:"id"`
+				ID          string `json:"id"`
 				Name        string `json:"name"`
 				Description string `json:"description"`
 				Default     bool   `json:"default"`
 			} `json:"environment"`
 		} `json:"workspace"`
-		ArtifactId string `json:"artifactId"`
+		ArtifactID string `json:"artifactId"`
 		Runtime    struct {
 			Type string `json:"type"`
-			Id   string `json:"id"`
+			ID   string `json:"id"`
 		} `json:"runtime"`
 	} `json:"items"`
 	Limit  int `json:"limit"`
@@ -128,17 +128,17 @@ type PlanAvailable struct {
 	Total  int `json:"total"`
 }
 
-type PlanById struct {
+type PlanByID struct {
 	Executable string `json:"executable"`
 	Name       string `json:"name"`
 	Workspace  struct {
-		Id          string `json:"id"`
+		ID          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description,omitempty"`
 		Owner       string `json:"owner,omitempty"`
 		Type        string `json:"type"`
 		Environment struct {
-			Id          string `json:"id"`
+			ID          string `json:"id"`
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			Default     bool   `json:"default"`
@@ -150,21 +150,21 @@ type PlanById struct {
 }
 
 type ExecutionStep struct {
-	StepId          string         `json:"stepId,omitempty"`
+	StepID          string         `json:"stepId,omitempty"`
 	StepName        string         `json:"stepName,omitempty"`
 	Status          string         `json:"status,omitempty"`
 	StepOnException *ExecutionStep `json:"stepOnException,omitempty"`
 	NextStep        *ExecutionStep `json:"nextStep,omitempty"`
 	Flows           []struct {
-		Id              string `json:"id"`
+		ID              string `json:"id"`
 		Name            string `json:"name"`
 		Version         string `json:"version"`
 		Description     string `json:"description"`
 		Destination     string `json:"destination"`
-		WorkspaceId     string `json:"workspaceId"`
+		WorkspaceID     string `json:"workspaceId"`
 		Plan            bool   `json:"plan"`
 		ArtifactVersion struct {
-			Id                 string `json:"id"`
+			ID                 string `json:"id"`
 			Name               string `json:"name"`
 			Version            string `json:"version"`
 			Type               string `json:"type"`
@@ -178,13 +178,13 @@ type ExecutionStep struct {
 				Comment  string `json:"comment"`
 			} `json:"parameters"`
 			Workspace struct {
-				Id          string `json:"id"`
+				ID          string `json:"id"`
 				Name        string `json:"name"`
 				Description string `json:"description"`
 				Owner       string `json:"owner"`
 				Type        string `json:"type"`
 				Environment struct {
-					Id      string `json:"id"`
+					ID      string `json:"id"`
 					Name    string `json:"name"`
 					Default bool   `json:"default"`
 				} `json:"environment"`
@@ -199,7 +199,7 @@ type ExecutionStep struct {
 
 type jPlanCreate struct {
 	Name        string            `json:"name"`
-	WorkspaceId string            `json:"workspaceId"`
+	WorkspaceID string            `json:"workspaceId"`
 	Description string            `json:"description,omitempty"`
 	Steps       []jPlanCreateStep `json:"steps,omitempty"`
 }
@@ -216,7 +216,7 @@ type jPlanCreateStep struct {
 
 func (c *Client) GetPlans(planQuery PlanQuery) (*PlanAvailable, error) {
 	queryParms, _ := query.Values(planQuery)
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(PlansUrl+"?%s", queryParms.Encode()), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(plansURL+"?%s", queryParms.Encode()), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -236,8 +236,8 @@ func (c *Client) GetPlans(planQuery PlanQuery) (*PlanAvailable, error) {
 	return &plans, nil
 }
 
-func (c *Client) GetPlanById(id string) (*PlanById, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(PlansUrl+"/%s", id), nil)
+func (c *Client) GetPlanByID(id string) (*PlanByID, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(plansURL+"/%s", id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -247,7 +247,7 @@ func (c *Client) GetPlanById(id string) (*PlanById, error) {
 		return nil, err
 	}
 
-	var plan PlanById
+	var plan PlanByID
 
 	err = json.Unmarshal(res, &plan)
 	if err != nil {
@@ -264,10 +264,10 @@ func (c *Client) CreatePlanFromPlainFile(jsonPlanFile string) (*PlanCreated, err
 	}
 	// Convert []byte to string and print to screen
 	text := string(content)
-	return c.CreatePlanFromPlainJson(text)
+	return c.CreatePlanFromPlainJSON(text)
 }
 
-func (c *Client) CreatePlanFromPlainJson(jsonPlan string) (*PlanCreated, error) {
+func (c *Client) CreatePlanFromPlainJSON(jsonPlan string) (*PlanCreated, error) {
 
 	var planCreate PlanCreate
 
@@ -296,7 +296,7 @@ func (c *Client) CreatePlan(p *PlanCreate) (*PlanCreated, error) {
 }
 
 func (c *Client) CreatePlanFromRawJson(jsonRequest string) (*PlanCreated, error) {
-	req, err := http.NewRequest(http.MethodPost, PlansUrl, strings.NewReader(jsonRequest))
+	req, err := http.NewRequest(http.MethodPost, plansURL, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -329,7 +329,7 @@ func (c *Client) CreatePlanFromRawFile(jsonRawFile string) (*PlanCreated, error)
 }
 
 func (c *Client) DeletePlan(id string) error {
-	req, err := http.NewRequest(http.MethodDelete, PlansUrl+"/"+id, nil)
+	req, err := http.NewRequest(http.MethodDelete, plansURL+"/"+id, nil)
 	if err != nil {
 		return err
 	}
@@ -360,7 +360,7 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 	if len(workspaces) > 1 {
 		return nil, fmt.Errorf("workspace not unique (%s)", workspaceQuery)
 	}
-	jplan.WorkspaceId = workspaces[0].Id
+	jplan.WorkspaceID = workspaces[0].Id
 
 	jplan.Steps = make([]jPlanCreateStep, len(p.Steps))
 	for i := range p.Steps {
@@ -408,7 +408,7 @@ func (c *Client) ParsePlan(p *PlanCreate) (*jPlanCreate, error) {
 }
 
 func (c *Client) UpdatePlanFromRawJson(planId string, jsonRequest string) (*PlanCreated, error) {
-	req, err := http.NewRequest(http.MethodPut, PlansUrl+"/"+planId, strings.NewReader(jsonRequest))
+	req, err := http.NewRequest(http.MethodPut, plansURL+"/"+planId, strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -479,7 +479,7 @@ func (c *Client) UpdatePlan(planId string, p *PlanCreate) (*PlanCreated, error) 
 }
 
 func (c *Client) GetPlanRunConfigByPlanId(planId string) (*PlanRunConfigResponse, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(PlansUrl+"/%s/run-config", planId), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(plansURL+"/%s/run-config", planId), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -498,14 +498,14 @@ func (c *Client) GetPlanRunConfigByPlanId(planId string) (*PlanRunConfigResponse
 
 	var planRunConfigResponse PlanRunConfigResponse
 
-	planRunConfigResponse.PlanId = planId
+	planRunConfigResponse.PlanID = planId
 	planRunConfigResponse.PlanRunConfig = planrunconfig
 
 	return &planRunConfigResponse, nil
 }
 
 func (c *Client) DeletePlanRunConfigByPlanId(planId string) error {
-	req, err := http.NewRequest(http.MethodDelete, PlansUrl+"/"+planId+"/run-config", nil)
+	req, err := http.NewRequest(http.MethodDelete, plansURL+"/"+planId+"/run-config", nil)
 	if err != nil {
 		return err
 	}
@@ -529,7 +529,7 @@ func (c *Client) UpdatePlanRunConfigFromRawFile(planId string, jsonRawFile strin
 }
 
 func (c *Client) UpdatePlanRunConfigFromRawJson(planId string, jsonRequest string) (*PlanRunConfigResponse, error) {
-	req, err := http.NewRequest(http.MethodPut, PlansUrl+"/"+planId+"/run-config", strings.NewReader(jsonRequest))
+	req, err := http.NewRequest(http.MethodPut, plansURL+"/"+planId+"/run-config", strings.NewReader(jsonRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -549,7 +549,7 @@ func (c *Client) UpdatePlanRunConfigFromRawJson(planId string, jsonRequest strin
 	}
 
 	var planrunconfigResponse PlanRunConfigResponse
-	planrunconfigResponse.PlanId = planId
+	planrunconfigResponse.PlanID = planId
 	planrunconfigResponse.PlanRunConfig = planrunconfig
 
 	return &planrunconfigResponse, nil
@@ -590,7 +590,7 @@ func (c *Client) UpdatePlanRunConfig(planRunConfig *PlanRunConfigRequest) (*Plan
 	}
 	workspaceId := workspaces[0].Id
 
-	plans, err := c.GetPlans(PlanQuery{Name: planRunConfig.Name, WorkspaceId: workspaceId, Limit: 100, Offset: 0})
+	plans, err := c.GetPlans(PlanQuery{Name: planRunConfig.Name, WorkspaceID: workspaceId, Limit: 100, Offset: 0})
 	if len(plans.Items) > 1 {
 		return nil, fmt.Errorf("plan not unique")
 	}
