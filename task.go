@@ -285,7 +285,9 @@ func (c *Client) ParseTask(t *TaskCreate) (*JTaskCreate, error) {
 
 	workspaceQuery := "name==" + t.Workspace.Name + ";environment.name==" + t.Workspace.Environment
 	workspaces, err := c.GetWorkspaces(workspaceQuery)
-
+	if err != nil {
+		return nil, err
+	}
 	if len(workspaces) == 0 {
 		return nil, fmt.Errorf("workspace not found (%s)", workspaceQuery)
 	}
@@ -562,6 +564,9 @@ func (c *Client) UpdateTaskRunConfig(taskRunConfig *TaskRunConfigRequest) (*Task
 
 	taskQuery := TaskQuery{Name: taskRunConfig.Name, WorkspaceID: workspaceID, Limit: 100, Offset: 0}
 	tasks, err := c.GetTasks(taskQuery)
+	if err != nil {
+		return nil, err
+	}
 	if len(tasks.Items) == 0 {
 		strTaskQuery, _ := json.Marshal(taskQuery)
 		return nil, fmt.Errorf("task not found (%s)", strTaskQuery)
