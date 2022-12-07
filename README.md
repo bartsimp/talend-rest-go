@@ -2,6 +2,10 @@
 A Go library for Talend Management Console REST API
 
 
+This project uses go-swagger (https://github.com/go-swagger/go-swagger) to generates a client based on TMC swagger specification
+
+    swagger generate client /q /f https://api.eu.cloud.talend.com/tmc/swagger/api-v2.6.json /default-scheme https
+
 ## Project status
 
 
