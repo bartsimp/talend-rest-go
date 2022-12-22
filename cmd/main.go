@@ -293,7 +293,7 @@ func createRemoteEngine(c *client.TalendManagementConsolePublicAPI, authInfo run
 }
 
 func deleteRemoteEngine(c *client.TalendManagementConsolePublicAPI, authInfo runtime.ClientAuthInfoWriterFunc, engineID string) {
-	fmt.Println("createRemoteEngine")
+	fmt.Println("deleteRemoteEngine")
 	_, err := c.RuntimeEngines.DeleteRemoteEngine(
 		runtime_engines.NewDeleteRemoteEngineParams().WithID(engineID),
 		authInfo,
