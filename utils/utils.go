@@ -7,11 +7,19 @@ import (
 )
 
 func UnmarshalErrorResponse(e *models.ErrorResponse) string {
-	return fmt.Sprintf(`{"code":"%s","details":"%s","message":"%s","requestId":"%s","status":%d,"url":"%s"}`,
+	message := ""
+	if e.Message != nil {
+		message = *e.Message
+	}
+	status := ""
+	if e.Status != nil {
+		status = fmt.Sprint(*e.Status)
+	}
+	return fmt.Sprintf(`{"code":"%s","details":"%s","message":"%s","requestId":"%s","status":%s,"url":"%s"}`,
 		e.Code,
 		e.Details,
-		*e.Message,
+		message,
 		e.RequestID,
-		*e.Status,
+		status,
 		e.URL)
 }
