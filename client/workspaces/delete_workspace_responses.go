@@ -23,6 +23,12 @@ type DeleteWorkspaceReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DeleteWorkspaceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
+	case 204:
+		result := NewDeleteWorkspaceNoContent()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return result, nil
 	case 401:
 		result := NewDeleteWorkspaceUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -56,6 +62,57 @@ func (o *DeleteWorkspaceReader) ReadResponse(response runtime.ClientResponse, co
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
+}
+
+// NewDeleteWorkspaceNoContent creates a DeleteWorkspaceNoContent with default headers values
+func NewDeleteWorkspaceNoContent() *DeleteWorkspaceNoContent {
+	return &DeleteWorkspaceNoContent{}
+}
+
+/*
+DeleteWorkspaceNoContent describes a response with status code 204, with default header values.
+
+Workspace successfully updated
+*/
+type DeleteWorkspaceNoContent struct {
+}
+
+// IsSuccess returns true when this delete workspace no content response has a 2xx status code
+func (o *DeleteWorkspaceNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this delete workspace no content response has a 3xx status code
+func (o *DeleteWorkspaceNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete workspace no content response has a 4xx status code
+func (o *DeleteWorkspaceNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete workspace no content response has a 5xx status code
+func (o *DeleteWorkspaceNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete workspace no content response a status code equal to that given
+func (o *DeleteWorkspaceNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+func (o *DeleteWorkspaceNoContent) Error() string {
+	return fmt.Sprintf("[DELETE /workspaces/{workspaceId}][%d] deleteWorkspaceNoContent ", 204)
+}
+
+func (o *DeleteWorkspaceNoContent) String() string {
+	return fmt.Sprintf("[DELETE /workspaces/{workspaceId}][%d] deleteWorkspaceNoContent ", 204)
+}
+
+func (o *DeleteWorkspaceNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
 }
 
 // NewDeleteWorkspaceUnauthorized creates a DeleteWorkspaceUnauthorized with default headers values
